@@ -1,15 +1,14 @@
-package com.event.management.services;
-
-import java.util.List;
+package com.event.management.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import com.event.management.model.Event;
 import com.event.management.repository.EventRepository;
 
 @Service
-public class EventServices {
+public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
@@ -22,12 +21,12 @@ public class EventServices {
         return eventRepository.save(event);
     }
 
-    public Event getEventById(Long id) {
-        return eventRepository.findById(id).orElse(null);
+    public Event getEventById(Long eventId) {
+        return eventRepository.findById(eventId).orElse(null);
     }
 
-    public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+    public void deleteEvent(Long eventId) {
+        eventRepository.deleteById(eventId);
     }
 
     public Event updateEvent(Event event) {

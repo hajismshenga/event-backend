@@ -1,36 +1,33 @@
 package com.event.management.model;
 
-import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "events")
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String location;
+
+    @Column(nullable = false)
+    private String details;
+
+    @Column(nullable = false)
     private String description;
-    private String title;
-    private LocalDate date;
 
-    // Constructors
-    public Event() {
-    }
+    @Column(nullable = false)
+    private String date;
 
-    public Event(Long id, String name, String description, String title, LocalDate date) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.title = title;
-        this.date = date;
-    }
+    @Column(nullable = false)
+    private String time;
 
-    // Getters and Setters
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -47,6 +44,22 @@ public class Event {
         this.name = name;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -55,19 +68,19 @@ public class Event {
         this.description = description;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
