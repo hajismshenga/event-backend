@@ -16,7 +16,6 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-
     @GetMapping("/all")
     public ResponseEntity<List<Event>> getAllEvents() {
         List<Event> events = eventService.getAllEvents();
@@ -24,9 +23,8 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addEvent(@RequestBody EventRequest eventRequest) {
+    public ResponseEntity<String> addEvent(@RequestBody EventRequest eventRequest) {
         try {
-            // Create the event
             Event event = new Event();
             event.setName(eventRequest.getName());
             event.setLocation(eventRequest.getLocation());
@@ -36,19 +34,15 @@ public class EventController {
             event.setTime(eventRequest.getTime());
             Event savedEvent = eventService.addEvent(event);
 
-            // Generate invitation link
-            String baseUrl = "http://localhost:8080/api/events/respond";
-            String inviteLink = baseUrl + "?eventId=" + savedEvent.getId() + "&token=" + savedEvent.getId(); // Using event ID as token for simplicity
+            String baseUrl = "http://localhost:3000/respond";
+            String inviteLink = baseUrl + "?eventId=" + savedEvent.getId() + "&token=" + savedEvent.getId();
 
-            // Prepare the invitation email content
             String emailContent = "Hello,\n\nYou are invited to the event \"" + savedEvent.getName() + "\".\n\nDetails:\nDate: " + savedEvent.getDate() +
                 "\nTime: " + savedEvent.getTime() + "\nLocation: " + savedEvent.getLocation() + "\nDescription: " + savedEvent.getDescription() +
                 "\n\nPlease confirm your attendance by clicking the following link:\n" + inviteLink + "\n\nThank you!";
             
-            // Return the invitation link for the user to copy and share
-            return new ResponseEntity<>(emailContent, HttpStatus.CREATED);
+            return new ResponseEntity<>(inviteLink, HttpStatus.CREATED);
         } catch (Exception e) {
-            // Log the stack trace
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add event: " + e.getMessage());
         }
     }
@@ -73,8 +67,13 @@ public class EventController {
     }
 
     @GetMapping("/respond")
-    public ResponseEntity<String> respondToEvent(@RequestParam Long eventId, @RequestParam String token) {
-        // In a real application, you'd verify the token and record the response
-        return new ResponseEntity<>("Response link received for event ID: " + eventId, HttpStatus.OK);
+    public ResponseEntity<String> respondToEvent(@RequestParam Long eventId, @RequestParam String token, @RequestParam String response) {
+        // Verify the token and record the response
+        if (eventService.verifyToken(eventId, token)) {
+            eventService.recordResponse(eventId, response);
+            return new ResponseEntity<>("Response recorded successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
+        }
     }
 }
