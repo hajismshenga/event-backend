@@ -19,7 +19,7 @@ public class EventManagementApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000") // Frontend URL
+                        .allowedOrigins("https://event-management-snowy-five.vercel.app/") // Frontend URL
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
