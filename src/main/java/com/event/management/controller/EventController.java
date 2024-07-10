@@ -1,13 +1,13 @@
 package com.event.management.controller;
 
-import java.util.List;
+import com.event.management.model.Event;
+import com.event.management.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.event.management.model.Event;
-import com.event.management.service.EventService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
@@ -55,8 +55,12 @@ public class EventController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEvent(@PathVariable("id") Long eventId) {
-        eventService.deleteEvent(eventId);
-        return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
+        try {
+            eventService.deleteEvent(eventId);
+            return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to delete event: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/update/{id}")
@@ -68,7 +72,6 @@ public class EventController {
 
     @GetMapping("/respond")
     public ResponseEntity<String> respondToEvent(@RequestParam Long eventId, @RequestParam String token, @RequestParam String response) {
-        // Verify the token and record the response
         if (eventService.verifyToken(eventId, token)) {
             eventService.recordResponse(eventId, response);
             return new ResponseEntity<>("Response recorded successfully", HttpStatus.OK);
